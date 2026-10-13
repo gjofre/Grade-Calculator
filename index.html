@@ -184,7 +184,7 @@
   <header>
     <div class="eyebrow">BIOL 151 · Fall 2026 · Profe Jofre</div>
     <h1>Grade Predictor</h1>
-    <p class="sub">Enter each component out of 100. Lowest Unit Assessment is dropped; the final exam can replace up to the two remaining if it's higher.</p>
+    <p class="sub">Enter each component out of 100. Lowest midterm is dropped; the final exam can replace up to the two remaining if it's higher.</p>
   </header>
 
   <div class="banner">
@@ -214,29 +214,29 @@
         <div class="inrow"><input type="number" id="post" min="0" max="100" step="any" placeholder="0–100"><span class="unit">/100</span></div>
       </div>
       <div class="field">
-        <label>Assignments <span class="weight">× 0.15</span></label>
+        <label>General Assignments <span class="weight">× 0.15</span></label>
         <div class="inrow"><input type="number" id="assign" min="0" max="100" step="any" placeholder="0–100"><span class="unit">/100</span></div>
       </div>
     </section>
 
     <section class="card">
-      <h2>Unit Assessments <span class="lite">(3 total · 40%)</span></h2>
+      <h2>Midterms <span class="lite">(3 total · 40%)</span></h2>
       <div class="field ua-field">
-        <label>Unit Assessment 1 <span id="tag1" class="tag pending">—</span></label>
+        <label>Midterm 1-total <span class="weight">(out of 100%)</span> <span id="tag1" class="tag pending">—</span></label>
         <div class="inrow"><input type="number" id="u1" min="0" max="100" step="any" placeholder="0–100"><span class="unit">/100</span></div>
       </div>
       <div class="field ua-field">
-        <label>Unit Assessment 2 <span id="tag2" class="tag pending">—</span></label>
+        <label>Midterm 2-total <span class="weight">(out of 100%)</span> <span id="tag2" class="tag pending">—</span></label>
         <div class="inrow"><input type="number" id="u2" min="0" max="100" step="any" placeholder="0–100"><span class="unit">/100</span></div>
       </div>
       <div class="field ua-field">
-        <label>Unit Assessment 3 <span id="tag3" class="tag pending">—</span></label>
+        <label>Midterm 3-total <span class="weight">(out of 100%)</span> <span id="tag3" class="tag pending">—</span></label>
         <div class="inrow"><input type="number" id="u3" min="0" max="100" step="any" placeholder="0–100"><span class="unit">/100</span></div>
       </div>
       <div class="field" style="margin-top:16px;padding-top:14px;border-top:1px solid var(--line);">
         <label>Final Exam <span class="weight">× 0.20 · also used for replacement</span></label>
         <div class="inrow"><input type="number" id="final" min="0" max="100" step="any" placeholder="0–100"><span class="unit">/100</span></div>
-        <div class="hint">Counts as 20% on its own, <b>and</b> replaces a kept Unit Assessment whenever the final is higher.</div>
+        <div class="hint">Counts as 20% on its own, <b>and</b> replaces a kept midterm whenever the final is higher.</div>
       </div>
     </section>
   </div>
@@ -282,16 +282,16 @@
   <div id="warnBox" class="note"></div>
 
   <div class="legend">
-    <span><i class="swatch" style="background:var(--c-low)"></i>Dropped (lowest UA)</span>
+    <span><i class="swatch" style="background:var(--c-low)"></i>Dropped (lowest midterm)</span>
     <span><i class="swatch" style="background:var(--c-keep)"></i>Kept (×0.20)</span>
     <span><i class="swatch" style="background:var(--c-repl)"></i>Score replaced by final</span>
   </div>
 
   <p class="note">
-    <b>How Unit Assessments work:</b> the lowest of the three is dropped. The two that remain are each worth 20%.
-    If the final-exam score is higher than a kept UA, it replaces that UA's score (up to both). The final still also
+    <b>How midterms work:</b> the lowest of the three is dropped. The two that remain are each worth 20%.
+    If the final-exam score is higher than a kept midterm, it replaces that midterm's score (up to both). The final still also
     counts as its own 20% either way — replacement reuses the final's value, it is not subtracted from the final.
-    Ties break by position (UA 1 first). Blank fields count as 0. Grades are not rounded: 89.99% is a B.
+    Ties break by position (Midterm 1 first). Blank fields count as 0. Grades are not rounded: 89.99% is a B.
     <br><b>Survey bonus:</b> a flat +0.5 points is added to the final weighted score for the whole class (toggle it off above if needed).
     It applies before the letter grade, so it can push a borderline score up a bracket, and the displayed score is capped at 100.
   </p>
@@ -377,18 +377,18 @@
     const postC = post.n*0.05; total += postC;
     rows.push({name:'Weekly Review Quizzes', scoreNote:fmt(post.n), weight:'5%', contrib:postC});
     const assignC = assign.n*0.15; total += assignC;
-    rows.push({name:'Assignments', scoreNote:fmt(assign.n), weight:'15%', contrib:assignC});
+    rows.push({name:'General Assignments', scoreNote:fmt(assign.n), weight:'15%', contrib:assignC});
 
-    rows.push({type:'head', label:'Unit assessments (40%)'});
+    rows.push({type:'head', label:'Midterms (40%)'});
     uaRaw.forEach(m => {
       if(m.idx===droppedIdx){
-        rows.push({name:'Unit Assessment '+m.idx, scoreNote:fmt(m.n), weight:'dropped', contrib:null, dot:'var(--c-low)', rankLabel:'dropped', dropped:true});
+        rows.push({name:'Midterm '+m.idx+'-total', scoreNote:fmt(m.n), weight:'dropped', contrib:null, dot:'var(--c-low)', rankLabel:'dropped', dropped:true});
       } else {
         const used = keptScore[m.idx];
         const c = used*0.20; total += c;
         const replaced = replacedSet.has(m.idx);
         rows.push({
-          name:'Unit Assessment '+m.idx,
+          name:'Midterm '+m.idx+'-total',
           scoreNote: replaced ? (fmt(used)+' <span class="mini">(final '+fmt(fin.n)+' replaced '+fmt(m.n)+')</span>') : fmt(used),
           weight:'20%', contrib:c,
           dot: replaced ? 'var(--c-repl)' : 'var(--c-keep)',
@@ -441,7 +441,7 @@
     const emptyUa = uaRaw.filter(m=>m.empty).length;
     if(overAny) warns.push('Values outside 0–100 were clamped.');
     if(partConverted) warns.push('Participation '+fmt(part.n)+' met the 70% threshold and was counted as 100.');
-    if(emptyUa>0) warns.push(emptyUa+' Unit Assessment field'+(emptyUa>1?'s':'')+' blank, counted as 0.');
+    if(emptyUa>0) warns.push(emptyUa+' midterm field'+(emptyUa>1?'s':'')+' blank, counted as 0.');
     if(bonusOn) warns.push('+0.5 survey bonus applied to the final score.');
     if(bonusOn && total>100) warns.push('Score capped at 100 for display (raw '+fmt(total)+').');
     warnBox.innerHTML = warns.length ? '<span class="warn">⚠ '+warns.join('  ·  ')+'</span>' : '';
